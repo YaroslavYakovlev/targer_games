@@ -1,49 +1,199 @@
+#include <cstring>
 #include <iostream>
 
-class Test
+// #include <string>
+// #include <vector>
+using namespace std;
+
+class MyString
 {
 private:
+  char *str;
+
 public:
-  Test()
+  MyString()
   {
-    std::cout << "Constructor" << std::endl;
+    str = nullptr;
   }
-  Test(const Test &testTmp)
+  MyString(char *str)
   {
-    std::cout << "Constructor copy" << std::endl;
+    int length = strlen(str);
+    this->str = new char[length + 1];
+    for (int i = 0; i < length; i++)
+    {
+      this->str[i] = str[i];
+    }
+    this->str[length] = '\0';
   }
-  ~Test()
+  ~MyString()
   {
-    std::cout << "Destructor" << std::endl;
+    delete[] this->str;
   }
 
-  char *ch;
+  MyString(const MyString &other)
+  {
+    int length = strlen(other.str);
+    this->str = new char[length + 1];
+    for (int i = 0; i < length; i++)
+    {
+      this->str[i] = other.str[i];
+    }
+    this->str[length] = '\0';
+  }
+
+  MyString &operator=(const MyString &other)
+  {
+    if (this->str != nullptr)
+    {
+      delete[] str;
+    }
+    int length = strlen(other.str);
+    this->str = new char[length + 1];
+    for (int i = 0; i < length; i++)
+    {
+      this->str[i] = other.str[i];
+    }
+    this->str[length] = '\0';
+    return *this;
+  }
+
+  MyString operator+(const MyString &other)
+  {
+    MyString newStr;
+    int thisLength = strlen(this->str);
+    int otherLength = strlen(other.str);
+    newStr.str = new char[thisLength + otherLength + 1];
+    int i = 0;
+    for (; i < thisLength; i++)
+    {
+      newStr.str[i] = this->str[i];
+    }
+
+    for (int j = 0; j < otherLength; j++, i++)
+    {
+      newStr.str[i] = other.str[j];
+    }
+
+    newStr.str[thisLength + otherLength] = '\0';
+    return newStr;
+  }
+
+  void Print()
+  {
+    cout << str;
+    cout << endl;
+  }
 };
-void funcShow(Test object)
+
+int main()
 {
-  std::cout << "\nThe function accepts the object as a parameter\n";
+  MyString str("Hello");
+  MyString str2("World");
+  MyString result;
+  result = str + " " + str2;
+  // str = "TEST";
+  // str = str2;
+  result.Print();
+
+  return 0;
 }
 
-Test funcReturnObject()
+// #define DEBUG
+// #define MY_CLASS
+
+#ifdef MY_CLASS
+class MyClass
 {
-  Test object;
-  std::cout << "\nThe function returns the object\n";
-  return object;
+private:
+  int Size;
+  std::vector<std::string> *vStr;
+  char *str;
+
+public:
+  MyClass(int size)
+  {
+    std::cout << "Constructor " << this << std::endl;
+    this->Size = size;
+    this->vStr = new std::vector<std::string>;
+    // for (int i = 0; i < size; i++)
+    // {
+    std::cin >> str;
+    vStr->push_back(*str);
+    // }
+#ifdef DEBUG
+    std::cout << std::endl;
+    std::cout << "Vector from the [Constructor]" << std::endl;
+    for (std::vector<int>::iterator it = vStr->begin(); it != vStr->end(); it++)
+    {
+      std::cout << (*it) << " ";
+    }
+    std::cout << std::endl;
+#endif
+  }
+
+  // MyClass(const MyClass &other)
+  // {
+  //   std::cout << "Constructor copy " << this << std::endl;
+  //   this->Size = other.Size;
+  //   this->vStr = new int[other.Size];
+
+  //   for (int i = 0; i < other.Size; i++)
+  //   {
+  //     this->data[i] = other.data[i];
+  //   }
+  // }
+
+  void fillList(std::vector<char> *vStr, int size);
+  void showList(int size);
+
+  ~MyClass()
+  {
+    std::cout << "Destructor " << this << std::endl;
+    delete vStr;
+  }
+};
+#endif
+#ifdef MY_CLASS
+void MyClass::fillList(std::vector<char> *vStr, int size)
+{
+  for (int i = 0; i < vStr->size(); i++)
+  {
+    vStr->push_back(i);
+  }
+}
+
+void MyClass::showList(int size)
+{
+  std::cout << "Vector from the [MyClass::showList]" << std::endl;
+
+  for (std::vector<char>::iterator it = vStr->begin(); it != vStr->end(); it++)
+  {
+    std::cout << (*it) << " ";
+  }
+  std::cout << std::endl;
 }
 
 int main()
 {
-  std::cout << "Name Project" << std::endl;
-  Test test;
-  funcShow(test);
-  funcReturnObject();
+  std::cout << "Test Targer Games" << std::endl;
+  MyClass myClass(10);
+  // myClass.fillList(&vStr, 10);s
+  myClass.showList(10);
 
-  test.ch = new char;
-  // std::cin >> test.ch;
-  // std::cout << test.ch << std::endl;
-  // delete test.ch;
+  char *tmpStr;
+  std::vector<std::string> vTmpStr;
+  // std::cin >> tmpStr;
+  vTmpStr->push_back(tmpStr);
+  // for (std::vector<std::string>::iterator it = vTmpStr->begin(); it != vTmpStr->end(); it++)
+  // {
+  //   std::cout << (*it) << " ";
+  // }
+  // for (int i = 0; i < 10; i++)
+  // std::cout << (void *)tmpStr << " ";
+
   return 0;
 }
+#endif
 
 // Реализовать класс динамических строк, который:
 // 1. Написан на C++11 без каких либо сторонних библиотек. Не использует в своей

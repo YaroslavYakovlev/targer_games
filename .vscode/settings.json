@@ -44,7 +44,8 @@
         "streambuf": "cpp",
         "typeinfo": "cpp",
         "ctime": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "list": "cpp"
     },
-    "editor.autoClosingQuotes" : "always"
+    "editor.autoClosingQuotes": "always"
 }
