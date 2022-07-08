@@ -9,50 +9,55 @@ class MyString
 {
 private:
   char *str;
+  int length;
 
 public:
   MyString()
   {
     str = nullptr;
+    length = 0;
   }
+
   MyString(char *str)
   {
-    int length = strlen(str);
+    length = strlen(str);
     this->str = new char[length + 1];
     for (int i = 0; i < length; i++)
-    {
       this->str[i] = str[i];
-    }
     this->str[length] = '\0';
   }
+  // Конструктор копирования
+  MyString(const MyString &other)
+  {
+    length = strlen(other.str);
+    this->str = new char[length + 1];
+    for (int i = 0; i < length; i++)
+      this->str[i] = other.str[i];
+    this->str[length] = '\0';
+  }
+  // Конструктор перемещения
+  MyString(MyString &&other)
+  {
+    this->length = other.length;
+    this->str = other.str;
+    other.str = nullptr;
+  }
+
   ~MyString()
   {
     delete[] this->str;
   }
 
-  MyString(const MyString &other)
-  {
-    int length = strlen(other.str);
-    this->str = new char[length + 1];
-    for (int i = 0; i < length; i++)
-    {
-      this->str[i] = other.str[i];
-    }
-    this->str[length] = '\0';
-  }
-
   MyString &operator=(const MyString &other)
   {
     if (this->str != nullptr)
-    {
       delete[] str;
-    }
-    int length = strlen(other.str);
+
+    length = strlen(other.str);
     this->str = new char[length + 1];
     for (int i = 0; i < length; i++)
-    {
       this->str[i] = other.str[i];
-    }
+
     this->str[length] = '\0';
     return *this;
   }
@@ -62,26 +67,51 @@ public:
     MyString newStr;
     int thisLength = strlen(this->str);
     int otherLength = strlen(other.str);
+
+    newStr.length = thisLength + otherLength;
     newStr.str = new char[thisLength + otherLength + 1];
     int i = 0;
     for (; i < thisLength; i++)
-    {
       newStr.str[i] = this->str[i];
-    }
 
     for (int j = 0; j < otherLength; j++, i++)
-    {
       newStr.str[i] = other.str[j];
-    }
 
     newStr.str[thisLength + otherLength] = '\0';
     return newStr;
+  }
+
+  bool operator==(const MyString &other)
+  {
+    if (this->length != other.length)
+      return false;
+
+    for (int i = 0; i < this->length; i++)
+      if (this->str[i] != other.str[i])
+        return false;
+
+    return true;
+  }
+
+  bool operator!=(const MyString &other)
+  {
+    return !(this->operator==(other));
+  }
+
+  char &operator[](int index)
+  {
+    return this->str[index];
   }
 
   void Print()
   {
     cout << str;
     cout << endl;
+  }
+
+  int Length()
+  {
+    return length;
   }
 };
 
@@ -91,8 +121,18 @@ int main()
   MyString str2("World");
   MyString result;
   result = str + " " + str2;
-  // str = "TEST";
-  // str = str2;
+  result.Print();
+
+  cout << "str - " << str.Length() << endl;
+  cout << "str2 - " << str2.Length() << endl;
+  cout << "result - " << result.Length() << endl;
+
+  if (str == str2)
+    cout << "Equal" << endl;
+  else if (str != str2)
+    cout << "No equal" << endl;
+
+  result[0] = 'Q';
   result.Print();
 
   return 0;
